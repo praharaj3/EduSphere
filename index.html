@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSphere - Advanced E-Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional inline styles for feature cards */
+        .auth-features {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-link {
+            text-decoration: none;
+            color: inherit;
+            flex: 1;
+            min-width: 0; /* Fixes flexbox overflow issues */
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            height: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: #4361ee;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #212529;
+        }
+
+        .feature-card p {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="auth-container">
+        <div class="auth-background"></div>
+        
+        <div class="auth-form-container">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>EduSphere</span>
+                </div>
+                <h1>Welcome to Next-Gen Learning</h1>
+                <p>Login to access your personalized learning dashboard</p>
+            </div>
+            
+            <form id="login-form" class="auth-form">
+                <div class="form-group floating-label">
+                    <input type="email" id="email" required>
+                    <label for="email">Institutional Email</label>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                
+                <div class="form-group floating-label">
+                    <input type="password" id="password" required>
+                    <label for="password">Password</label>
+                    <i class="fas fa-lock"></i>
+                    <button type="button" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">Remember me
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-glow">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="#" id="switch-to-register">Contact administrator</a></p>
+                </div>
+            </form>
+        </div>
+        
+        <div class="auth-features">
+            <a href="courses.html" class="feature-link">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Interactive Courses</h3>
+                    <p>Engaging multimedia content with progress tracking</p>
+                </div>
+            </a>
+            
+            <a href="assignment.html" class="feature-link">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>Assignment Management</h3>
+                    <p>Submit work and receive timely feedback</p>
+                </div>
+            </a>
+            
+            <a href="analytics.html" class="feature-link">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Performance Analytics</h3>
+                    <p>Track your progress with detailed insights</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

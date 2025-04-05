@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Analytics | EduSphere</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --primary-light: #4895ef;
+            --secondary: #f72585;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ffcc00;
+            --danger: #ff3333;
+            --gray: #6c757d;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        .analytics-hero {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analytics-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .analytics-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .time-btn {
+            padding: 0.5rem 1rem;
+            background: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .time-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .time-btn:hover:not(.active) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover::after {
+            height: 6px;
+            background: var(--secondary);
+        }
+
+        .stat-title {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            color: var(--dark);
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        .neutral {
+            color: var(--gray);
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .chart-container:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .course-performance {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .course-performance:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .performance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .performance-item:hover {
+            background: rgba(67, 97, 238, 0.03);
+        }
+
+        .performance-item:last-child {
+            border-bottom: none;
+        }
+
+        .performance-bar {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            flex-grow: 1;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--primary);
+            position: relative;
+            transition: width 1s ease-out;
+        }
+
+        .bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.3) 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        .performance-value {
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: var(--white);
+            margin-bottom: 1rem;
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--accent);
+            transform: translateX(-3px);
+        }
+
+        .analytics-hero h1 {
+            position: relative;
+            z-index: 2;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .analytics-hero p {
+            position: relative;
+            z-index: 2;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 4px 30px rgba(67, 97, 238, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3); }
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            animation: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .analytics-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .time-filter {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .analytics-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-value {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-hero">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h1>Performance Analytics</h1>
+        <p>Track your progress with detailed insights and personalized recommendations</p>
+    </div>
+    
+    <div class="analytics-container">
+        <div class="analytics-header">
+            <h2>My Learning Analytics</h2>
+            <div class="time-filter">
+                <button class="time-btn">Weekly</button>
+                <button class="time-btn active">Monthly</button>
+                <button class="time-btn">Quarterly</button>
+                <button class="time-btn">Yearly</button>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">Overall Completion</div>
+                <div class="stat-value">78%</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 12% from last month
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">Average Score</div>
+                <div class="stat-value">86/100</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 5% improvement
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">Time Spent</div>
+                <div class="stat-value">24h 36m</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i> 3h less
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">Engagement</div>
+                <div class="stat-value">92%</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 8% increase
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Progress Over Time</h3>
+                <div class="time-filter">
+                    <button class="time-btn"><i class="fas fa-chart-line"></i> Progress</button>
+                    <button class="time-btn"><i class="fas fa-clock"></i> Time</button>
+                    <button class="time-btn active"><i class="fas fa-star"></i> Scores</button>
+                </div>
+            </div>
+            <div class="chart-placeholder">
+                [Interactive Chart Would Appear Here]
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h3>Course Comparison</h3>
+            <div class="chart-placeholder">
+                [Comparison Chart Would Appear Here]
+            </div>
+        </div>
+        
+        <div class="course-performance">
+            <h3>Detailed Course Performance</h3>
+            <div class="performance-item">
+                <div>Advanced Mathematics</div>
+                <div class="performance-bar">
+                    <div class="bar-fill" style="width: 82%"></div>
+                </div>
+                <div class="performance-value">82%</div>
+            </div>
+            <div class="performance-item">
+                <div>Data Science Fundamentals</div>
+                <div class="performance-bar">
+                    <div class="bar-fill" style="width: 65%"></div>
+                </div>
+                <div class="performance-value">65%</div>
+            </div>
+            <div class="performance-item">
+                <div>World History</div>
+                <div class="performance-bar">
+                    <div class="bar-fill" style="width: 94%"></div>
+                </div>
+                <div class="performance-value">94%</div>
+            </div>
+            <div class="performance-item">
+                <div>Web Development</div>
+                <div class="performance-bar">
+                    <div class="bar-fill" style="width: 72%"></div>
+                </div>
+                <div class="performance-value">72%</div>
+            </div>
+            <div class="performance-item">
+                <div>Digital Marketing</div>
+                <div class="performance-bar">
+                    <div class="bar-fill" style="width: 58%"></div>
+                </div>
+                <div class="performance-value">58%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-btn">
+        <i class="fas fa-download"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Time filter buttons
+            const timeButtons = document.querySelectorAll('.time-btn');
+            timeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    timeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Here you would typically filter the data
+                    console.log(`Time filter changed to ${this.textContent}`);
+                });
+            });
+            
+            // Floating button click handler
+            const floatingBtn = document.querySelector('.floating-btn');
+            floatingBtn.addEventListener('click', function() {
+                alert('Exporting your analytics data...');
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-download"></i>';
+                    alert('Data exported successfully!');
+                }, 1500);
+            });
+            
+            // Animate progress bars on page load
+            const progressBars = document.querySelectorAll('.bar-fill');
+            progressBars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0';
+                
+                setTimeout(() => {
+                    bar.style.width = targetWidth;
+                }, 300);
+            });
+            
+            // Add hover effect to stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Management | EduSphere</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --primary-light: #4895ef;
+            --secondary: #f72585;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ffcc00;
+            --danger: #ff3333;
+            --gray: #6c757d;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        .assignment-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, #b5179e 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assignment-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .assignment-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-box {
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .assignment-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            animation: tabUnderline 0.3s ease-out;
+        }
+
+        @keyframes tabUnderline {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .assignment-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .assignment-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .assignment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .assignment-card:hover::before {
+            width: 8px;
+            background: var(--secondary);
+        }
+
+        .assignment-info h3 {
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            font-size: 1.25rem;
+        }
+
+        .assignment-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .assignment-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .assignment-status {
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .status-pending {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .status-submitted {
+            background: rgba(75, 181, 67, 0.1);
+            color: var(--success);
+        }
+
+        .status-late {
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--danger);
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-left: 1.5rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-view:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .btn-download {
+            background: transparent;
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .btn-download:hover {
+            background: rgba(75, 181, 67, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: var(--white);
+            margin-bottom: 1rem;
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--accent);
+            transform: translateX(-3px);
+        }
+
+        .assignment-hero h1 {
+            position: relative;
+            z-index: 2;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .assignment-hero p {
+            position: relative;
+            z-index: 2;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 4px 30px rgba(67, 97, 238, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3); }
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            animation: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .assignment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-filter {
+                width: 100%;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .assignment-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .assignment-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .assignment-hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="assignment-hero">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h1>Assignment Management</h1>
+        <p>Submit work and receive timely feedback from instructors with our advanced tracking system</p>
+    </div>
+    
+    <div class="assignment-container">
+        <div class="assignment-header">
+            <h2>My Assignments</h2>
+            <div class="search-filter">
+                <input type="text" class="search-box" placeholder="Search assignments...">
+                <button class="filter-btn">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </div>
+        </div>
+        
+        <div class="assignment-tabs">
+            <button class="tab-btn active">Current</button>
+            <button class="tab-btn">Submitted</button>
+            <button class="tab-btn">Graded</button>
+            <button class="tab-btn">Overdue</button>
+        </div>
+        
+        <div class="assignment-list">
+            <div class="assignment-card">
+                <div class="assignment-info">
+                    <h3>Linear Algebra Problem Set</h3>
+                    <div class="assignment-meta">
+                        <span><i class="fas fa-book"></i> Advanced Mathematics</span>
+                        <span><i class="fas fa-calendar-alt"></i> Due: May 25, 2023</span>
+                        <span><i class="fas fa-clock"></i> 3 days remaining</span>
+                    </div>
+                </div>
+                <div class="assignment-actions">
+                    <button class="btn-action btn-submit">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                    <button class="btn-action btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </div>
+                <span class="assignment-status status-pending">Pending Submission</span>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="assignment-info">
+                    <h3>Data Visualization Project</h3>
+                    <div class="assignment-meta">
+                        <span><i class="fas fa-book"></i> Data Science</span>
+                        <span><i class="fas fa-calendar-alt"></i> Due: May 18, 2023</span>
+                        <span><i class="fas fa-check-circle"></i> Submitted: May 15</span>
+                    </div>
+                </div>
+                <div class="assignment-actions">
+                    <button class="btn-action btn-download">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn-action btn-view">
+                        <i class="fas fa-eye"></i> View Feedback
+                    </button>
+                </div>
+                <span class="assignment-status status-submitted">Submitted</span>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="assignment-info">
+                    <h3>History Research Paper</h3>
+                    <div class="assignment-meta">
+                        <span><i class="fas fa-book"></i> World History</span>
+                        <span><i class="fas fa-calendar-alt"></i> Due: May 10, 2023</span>
+                        <span><i class="fas fa-exclamation-triangle"></i> 5 days late</span>
+                    </div>
+                </div>
+                <div class="assignment-actions">
+                    <button class="btn-action btn-submit">
+                        <i class="fas fa-paper-plane"></i> Submit Late
+                    </button>
+                    <button class="btn-action btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </div>
+                <span class="assignment-status status-late">Late Submission</span>
+            </div>
+            
+            <!-- Additional assignment cards -->
+            <div class="assignment-card">
+                <div class="assignment-info">
+                    <h3>Web Development Project</h3>
+                    <div class="assignment-meta">
+                        <span><i class="fas fa-book"></i> Programming</span>
+                        <span><i class="fas fa-calendar-alt"></i> Due: June 2, 2023</span>
+                        <span><i class="fas fa-clock"></i> 10 days remaining</span>
+                    </div>
+                </div>
+                <div class="assignment-actions">
+                    <button class="btn-action btn-submit">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                    <button class="btn-action btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </div>
+                <span class="assignment-status status-pending">Pending Submission</span>
+            </div>
+            
+            <div class="assignment-card">
+                <div class="assignment-info">
+                    <h3>Marketing Case Study</h3>
+                    <div class="assignment-meta">
+                        <span><i class="fas fa-book"></i> Business</span>
+                        <span><i class="fas fa-calendar-alt"></i> Due: May 5, 2023</span>
+                        <span><i class="fas fa-check-circle"></i> Graded: 92/100</span>
+                    </div>
+                </div>
+                <div class="assignment-actions">
+                    <button class="btn-action btn-download">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn-action btn-view">
+                        <i class="fas fa-eye"></i> View Feedback
+                    </button>
+                </div>
+                <span class="assignment-status status-submitted">Graded</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-btn">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Here you would typically load different assignment data
+                    // For demo, we'll just log the tab change
+                    console.log(`Switched to ${this.textContent} tab`);
+                });
+            });
+            
+            // Floating button click handler
+            const floatingBtn = document.querySelector('.floating-btn');
+            floatingBtn.addEventListener('click', function() {
+                alert('New assignment creation dialog would appear here!');
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-plus"></i>';
+                }, 1500);
+            });
+            
+            // Assignment card hover effect enhancement
+            const assignmentCards = document.querySelectorAll('.assignment-card');
+            assignmentCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Simulate loading animation for status indicators
+            const statusIndicators = document.querySelectorAll('.assignment-status');
+            statusIndicators.forEach(status => {
+                status.style.opacity = '0';
+                setTimeout(() => {
+                    status.style.opacity = '1';
+                    status.style.transition = 'opacity 0.5s ease';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
